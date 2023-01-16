@@ -3,7 +3,7 @@ use std::marker::PhantomData;
 use halo2_proofs::{
     arithmetic::FieldExt,
     circuit::{AssignedCell, Chip, Layouter, Region, SimpleFloorPlanner, Value},
-    plonk::{Advice, Circuit, Column, ConstraintSystem, Error, Fixed, Instance, Selector},
+    plonk::{Advice, Circuit, Column, ConstraintSystem, Error, Fixed, Instance, Selector, Expression},
     poly::Rotation,
 };
 
@@ -20,6 +20,14 @@ trait NumericInstructions<F: FieldExt>: Chip<F> {
 
     /// Returns `c = a * b`.
     fn mul(
+        &self,
+        layouter: impl Layouter<F>,
+        a: Self::Num,
+        b: Self::Num,
+    ) -> Result<Self::Num, Error>;
+
+    /// Returns `c = a + b`.
+    fn add(
         &self,
         layouter: impl Layouter<F>,
         a: Self::Num,
@@ -62,7 +70,7 @@ struct FieldConfig {
     // any constraints on cells where `NumericInstructions::mul` is not being used.
     // This is important when building larger circuits, where columns are used by
     // multiple sets of instructions.
-    s_mul: Selector,
+    ss: Selector,
 }
 
 impl<F: FieldExt> FieldChip<F> {
@@ -84,42 +92,46 @@ impl<F: FieldExt> FieldChip<F> {
         for column in &advice {
             meta.enable_equality(*column);
         }
-        let s_mul = meta.selector();
+        let ss = meta.selector();
 
-        // Define our multiplication gate!
-        meta.create_gate("mul", |meta| {
-            // To implement multiplication, we need three advice cells and a selector
-            // cell. We arrange them like so:
-            //
-            // | a0  | a1  | s_mul |
-            // |-----|-----|-------|
-            // | lhs | rhs | s_mul |
-            // | out |     |       |
-            //
-            // Gates may refer to any relative offsets we want, but each distinct
-            // offset adds a cost to the proof. The most common offsets are 0 (the
-            // current row), 1 (the next row), and -1 (the previous row), for which
-            // `Rotation` has specific constructors.
+        // // Define our multiplication gate!
+        // meta.create_gate("mul", |meta| {
+        //     // To implement multiplication, we need three advice cells and a selector
+        //     // cell. We arrange them like so:
+        //     //
+        //     // | a0  | a1  | ss |
+        //     // |-----|-----|----|
+        //     // | lhs | rhs | ss |
+        //     // | out |     |    |
+        //     //
+        //     // Gates may refer to any relative offsets we want, but each distinct
+        //     // offset adds a cost to the proof. The most common offsets are 0 (the
+        //     // current row), 1 (the next row), and -1 (the previous row), for which
+        //     // `Rotation` has specific constructors.
+        //     let lhs = meta.query_advice(advice[0], Rotation::cur());
+        //     let rhs = meta.query_advice(advice[1], Rotation::cur());
+        //     let out = meta.query_advice(advice[0], Rotation::next());
+        //     let ss = meta.query_selector(ss);
+
+        //     vec![ss * (lhs * rhs - out)]
+        // });
+
+        meta.create_gate("add", |meta| {
+            // | a0  | a1  | ss |
+            // |-----|-----|----|
+            // | lhs | rhs | ss |
+            // | out |     |    |
             let lhs = meta.query_advice(advice[0], Rotation::cur());
             let rhs = meta.query_advice(advice[1], Rotation::cur());
             let out = meta.query_advice(advice[0], Rotation::next());
-            let s_mul = meta.query_selector(s_mul);
-
-            // Finally, we return the polynomial expressions that constrain this gate.
-            // For our multiplication gate, we only need a single polynomial constraint.
-            //
-            // The polynomial expressions returned from `create_gate` will be
-            // constrained by the proving system to equal zero. Our expression
-            // has the following properties:
-            // - When s_mul = 0, any value is allowed in lhs, rhs, and out.
-            // - When s_mul != 0, this constrains lhs * rhs = out.
-            vec![s_mul * (lhs * rhs - out)]
+            let ss = meta.query_selector(ss);
+            vec![ss * (lhs + rhs - out)]
         });
 
         FieldConfig {
             advice,
             instance,
-            s_mul,
+            ss,
         }
     }
 }
@@ -196,7 +208,7 @@ impl<F: FieldExt> NumericInstructions<F> for FieldChip<F> {
                 // We only want to use a single multiplication gate in this region,
                 // so we enable it at region offset 0; this means it will constrain
                 // cells at offsets 0 and 1.
-                config.s_mul.enable(&mut region, 0)?;
+                config.ss.enable(&mut region, 0)?;
 
                 // The inputs we've been given could be located anywhere in the circuit,
                 // but we can only rely on relative offsets inside this region. So we
@@ -213,6 +225,27 @@ impl<F: FieldExt> NumericInstructions<F> for FieldChip<F> {
                 // variable to be used in another part of the circuit.
                 region
                     .assign_advice(|| "lhs * rhs", config.advice[0], 1, || value)
+                    .map(Number)
+            },
+        )
+    }
+
+    fn add(
+        &self,
+        mut layouter: impl Layouter<F>,
+        a: Self::Num,
+        b: Self::Num,
+    ) -> Result<Self::Num, Error> {
+        let config = self.config();
+        layouter.assign_region(
+            || "add",
+            |mut region: Region<'_, F>| {
+                config.ss.enable(&mut region, 0)?;
+                a.0.copy_advice(|| "lhs", &mut region, config.advice[0], 0)?;
+                b.0.copy_advice(|| "rhs", &mut region, config.advice[1], 0)?;
+                let value = a.0.value().copied() + b.0.value();
+                region
+                    .assign_advice(|| "lhs + rhs", config.advice[0], 1, || value)
                     .map(Number)
             },
         )
@@ -273,28 +306,16 @@ impl<F: FieldExt> Circuit<F> for MyCircuit<F> {
     ) -> Result<(), Error> {
         let field_chip = FieldChip::<F>::construct(config);
 
-        // Load our private values into the circuit.
-        let a = field_chip.load_private(layouter.namespace(|| "load a"), self.a)?;
-        let b = field_chip.load_private(layouter.namespace(|| "load b"), self.b)?;
-
         // Load the constant factor into the circuit.
         let constant =
             field_chip.load_constant(layouter.namespace(|| "load constant"), self.constant)?;
 
-        // We only have access to plain multiplication.
-        // We could implement our circuit as:
-        //     asq  = a*a
-        //     bsq  = b*b
-        //     absq = asq*bsq
-        //     c    = constant*asq*bsq
-        //
-        // but it's more efficient to implement it as:
-        //     ab   = a*b
-        //     absq = ab^2
-        //     c    = constant*absq
-        let ab = field_chip.mul(layouter.namespace(|| "a * b"), a, b)?;
-        let absq = field_chip.mul(layouter.namespace(|| "ab * ab"), ab.clone(), ab)?;
-        let c = field_chip.mul(layouter.namespace(|| "constant * absq"), constant, absq)?;
+        // Load our private values into the circuit.
+        let a = field_chip.load_private(layouter.namespace(|| "load a"), self.a)?;
+        let b = field_chip.load_private(layouter.namespace(|| "load b"), self.b)?;
+
+        let apb = field_chip.add(layouter.namespace(|| "a+b"), a, b)?;
+        let c = field_chip.add(layouter.namespace(|| "a+b+constant"), apb, constant)?;
 
         // Expose the result as a public input to the circuit.
         field_chip.expose_public(layouter.namespace(|| "expose c"), c, 0)
@@ -312,12 +333,11 @@ fn main() {
     // circuit is very small, we can pick a very small value here.
     let k = 4;
 
-    // output = constant * a * a * b * b
     // Prepare the private and public inputs to the circuit!
     let constant = Fp::from(7);
     let a = Fp::from(2);
     let b = Fp::from(3);
-    let c = constant * a.square() * b.square();
+    let c = a + b + constant;
 
     // Instantiate the circuit with the private inputs.
     let circuit = MyCircuit {
@@ -326,11 +346,10 @@ fn main() {
         b: Value::known(b),
     };
 
-    println!("# Prover is expected to return ERR.");
+    println!("# Prover is expected to return OK.");
     // Arrange the public input. We expose the multiplication result in row 0
     // of the instance column, so we position it there in our public inputs.
-    let mut public_inputs = vec![c];
-    public_inputs[0] += Fp::one();
+    let public_inputs = vec![c];
     // Given the correct public input, our circuit will verify.
     let prover = MockProver::run(k, &circuit, vec![public_inputs.clone()]).unwrap();
     prover.assert_satisfied();
