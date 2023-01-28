@@ -44,8 +44,8 @@ impl<F: FieldExt> FibonacciChip<F> {
 
         meta.create_gate("add", |meta| {
             //
-            // col_a | col_b | col_c | selector
-            //   a      b        c       s
+            // col_a | col_b | col_c | out | selector
+            //   a       b       c      o       s
             //
             let s = meta.query_selector(selector);
             let one = meta.query_fixed(col_one, Rotation::cur());
