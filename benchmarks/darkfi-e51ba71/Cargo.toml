@@ -1,0 +1,21 @@
+[package]
+name = "darkfi"
+version = "0.3.0"
+homepage = "https://dark.fi"
+description = "Anonymous. Uncensored. Sovereign."
+authors = ["darkfi <dev@dark.fi>"]
+repository = "https://github.com/darkrenaissance/darkfi"
+license = "AGPL-3.0-only"
+edition = "2021"
+
+[lib]
+name = "darkfi"
+
+[dependencies]
+group = {version = "0.12.0"}
+halo2_proofs = {version = "0.2.0"}
+#halo2_proofs = {git = "https://github.com/zcash/halo2.git", rev = "a898d65ae3ad3d41987666f6a03cfc15edae01c4"}
+
+[[bin]]
+name = "darkfi-0"
+path = "ex/darkfi-0.rs"

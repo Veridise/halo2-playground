@@ -639,6 +639,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "darkfi"
+version = "0.3.0"
+dependencies = [
+ "group",
+ "halo2_proofs 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "der"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1235,6 +1243,21 @@ dependencies = [
  "pasta_curves",
  "rand_core",
  "rayon",
+]
+
+[[package]]
+name = "halo2_proofs"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cff771b9a2445cd2545c9ef26d863c290fbb44ae440c825a20eb7156f67a949a"
+dependencies = [
+ "blake2b_simd",
+ "ff",
+ "group",
+ "pasta_curves",
+ "rand_core",
+ "rayon",
+ "tracing",
 ]
 
 [[package]]

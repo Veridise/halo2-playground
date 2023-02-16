@@ -14,5 +14,7 @@ cargo run -p cab2 --bin cab2-0
 cargo run -p cab2 --bin cab2-1
 
 cargo +nightly test -p halo2-rsa
+
+cargo run -p darkfi --bin darkfi-0
 ```
 
