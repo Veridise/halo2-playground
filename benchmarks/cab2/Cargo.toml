@@ -1,0 +1,20 @@
+[package]
+name = "cab2"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.56.1"
+
+[[bin]]
+name = "cab2"
+path = "src/cab2.rs"
+
+[[bin]]
+name = "cab2-0"
+path = "src/cab2-0.rs"
+
+[[bin]]
+name = "cab2-1"
+path = "src/cab2-1.rs"
+
+[dependencies]
+halo2_proofs = { git = "https://github.com/appliedzkp/halo2.git", rev = "96d9bde905a20117b4350ffba0b0a6479aa63f0a" }

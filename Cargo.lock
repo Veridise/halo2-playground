@@ -44,6 +44,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "cab2"
+version = "0.1.0"
+dependencies = [
+ "halo2_proofs",
+]
+
+[[package]]
 name = "cfg-if"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -99,6 +106,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "devcon"
+version = "0.1.0"
+dependencies = [
+ "halo2_proofs",
+]
+
+[[package]]
 name = "either"
 version = "1.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -141,13 +155,6 @@ dependencies = [
  "ff",
  "rand_core",
  "subtle",
-]
-
-[[package]]
-name = "halo2-playground"
-version = "0.1.0"
-dependencies = [
- "halo2_proofs",
 ]
 
 [[package]]
