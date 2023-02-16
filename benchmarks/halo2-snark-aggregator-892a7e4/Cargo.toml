@@ -1,0 +1,18 @@
+[package]
+name = "snark-0"
+version = "0.1.0"
+edition = "2021"
+authors = ["zhangjunyu <junyu92@gmail.com>"]
+
+[dependencies]
+group = "0.11"
+halo2_proofs = { git = "https://github.com/appliedzkp/halo2.git", rev = "96d9bde905a20117b4350ffba0b0a6479aa63f0a" }
+# version issue, replaced for benchmark creation
+# halo2_proofs = { git = "https://github.com/junyu0312/halo2", rev = "3f6196fed5a61b7f86eb56848b4193d7a7b830d9", default-features = true}
+
+[lib]
+name = "snark"
+
+[[bin]]
+name = "snark-0"
+path = "ex/snark-0.rs"

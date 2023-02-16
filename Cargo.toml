@@ -4,5 +4,6 @@ members = [
     "benchmarks/devcon/",
     "benchmarks/cab2/",
     "benchmarks/halo2-rsa-b66eeeb/",
-    "benchmarks/darkfi-e51ba71/"
+    "benchmarks/darkfi-e51ba71/",
+    "benchmarks/halo2-snark-aggregator-892a7e4/"
 ]

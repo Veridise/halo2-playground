@@ -639,10 +639,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "darkfi"
+name = "darkfi-0"
 version = "0.3.0"
 dependencies = [
- "group",
+ "group 0.12.1",
  "halo2_proofs 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -740,9 +740,9 @@ dependencies = [
  "crypto-bigint 0.4.9",
  "der 0.6.1",
  "digest 0.10.6",
- "ff",
+ "ff 0.12.1",
  "generic-array 0.14.6",
- "group",
+ "group 0.12.1",
  "pkcs8 0.9.0",
  "rand_core",
  "sec1",
@@ -978,6 +978,16 @@ dependencies = [
 
 [[package]]
 name = "ff"
+version = "0.11.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "131655483be284720a17d74ff97592b8e76576dc25563148601df2d7c9080924"
+dependencies = [
+ "rand_core",
+ "subtle",
+]
+
+[[package]]
+name = "ff"
 version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d013fc25338cc558c5c2cfbad646908fb23591e2404481826742b651c9af7160"
@@ -1179,11 +1189,23 @@ dependencies = [
 
 [[package]]
 name = "group"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bc5ac374b108929de78460075f3dc439fa66df9d8fc77e8f12caa5165fcf0c89"
+dependencies = [
+ "byteorder",
+ "ff 0.11.1",
+ "rand_core",
+ "subtle",
+]
+
+[[package]]
+name = "group"
 version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5dfbfb3a6cfbd390d5c9564ab283a0349b9b9fcd46a706c1eb10e0db70bfbac7"
 dependencies = [
- "ff",
+ "ff 0.12.1",
  "rand_core",
  "subtle",
 ]
@@ -1238,8 +1260,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e925780549adee8364c7f2b685c753f6f3df23bde520c67416e93bf615933760"
 dependencies = [
  "blake2b_simd",
- "ff",
- "group",
+ "ff 0.12.1",
+ "group 0.12.1",
  "pasta_curves",
  "rand_core",
  "rayon",
@@ -1252,8 +1274,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cff771b9a2445cd2545c9ef26d863c290fbb44ae440c825a20eb7156f67a949a"
 dependencies = [
  "blake2b_simd",
- "ff",
- "group",
+ "ff 0.12.1",
+ "group 0.12.1",
  "pasta_curves",
  "rand_core",
  "rayon",
@@ -1266,8 +1288,8 @@ version = "0.2.0"
 source = "git+https://github.com/privacy-scaling-explorations/halo2.git?tag=v2022_09_10#a9e99a72a65d7c98e8a4258c2c94269c834d1c10"
 dependencies = [
  "blake2b_simd",
- "ff",
- "group",
+ "ff 0.12.1",
+ "group 0.12.1",
  "halo2curves 0.2.1",
  "rand_core",
  "rayon",
@@ -1280,8 +1302,8 @@ version = "0.2.0"
 source = "git+https://github.com/privacy-scaling-explorations/halo2?tag=v2023_02_02#0a8646b78286a13d320759b1c585262d6536dce4"
 dependencies = [
  "blake2b_simd",
- "ff",
- "group",
+ "ff 0.12.1",
+ "group 0.12.1",
  "halo2curves 0.3.1",
  "rand_core",
  "rayon",
@@ -1295,8 +1317,8 @@ version = "0.2.0"
 source = "git+https://github.com/appliedzkp/halo2.git?rev=96d9bde905a20117b4350ffba0b0a6479aa63f0a#96d9bde905a20117b4350ffba0b0a6479aa63f0a"
 dependencies = [
  "blake2b_simd",
- "ff",
- "group",
+ "ff 0.12.1",
+ "group 0.12.1",
  "pasta_curves",
  "rand_core",
  "rayon",
@@ -1308,8 +1330,8 @@ name = "halo2curves"
 version = "0.2.1"
 source = "git+https://github.com/privacy-scaling-explorations/halo2curves?tag=0.2.1#f75ed26c961179186e9cec02cc3f841ca9e3fec1"
 dependencies = [
- "ff",
- "group",
+ "ff 0.12.1",
+ "group 0.12.1",
  "lazy_static",
  "num-bigint",
  "num-traits",
@@ -1325,8 +1347,8 @@ name = "halo2curves"
 version = "0.3.1"
 source = "git+https://github.com/privacy-scaling-explorations/halo2curves.git?tag=0.3.1#9b67e19bca30a35208b0c1b41c1723771e2c9f49"
 dependencies = [
- "ff",
- "group",
+ "ff 0.12.1",
+ "group 0.12.1",
  "lazy_static",
  "num-bigint",
  "num-traits",
@@ -1342,7 +1364,7 @@ name = "halo2wrong"
 version = "0.1.0"
 source = "git+https://github.com/privacy-scaling-explorations/halo2wrong?tag=v2023_02_02#5905a20b62fcd9f6c269416a39c80de7ced8fb02"
 dependencies = [
- "group",
+ "group 0.12.1",
  "halo2_proofs 0.2.0 (git+https://github.com/privacy-scaling-explorations/halo2?tag=v2023_02_02)",
  "num-bigint",
  "num-integer",
@@ -1354,7 +1376,7 @@ name = "halo2wrong"
 version = "0.1.0"
 source = "git+https://github.com/privacy-scaling-explorations/halo2wrong?rev=ed953b054b906b64787dc9a8cbefc0db4be9f8fa#ed953b054b906b64787dc9a8cbefc0db4be9f8fa"
 dependencies = [
- "group",
+ "group 0.12.1",
  "halo2_proofs 0.2.0 (git+https://github.com/privacy-scaling-explorations/halo2.git?tag=v2022_09_10)",
  "num-bigint",
  "num-integer",
@@ -1753,7 +1775,7 @@ name = "maingate"
 version = "0.1.0"
 source = "git+https://github.com/privacy-scaling-explorations/halo2wrong?tag=v2023_02_02#5905a20b62fcd9f6c269416a39c80de7ced8fb02"
 dependencies = [
- "group",
+ "group 0.12.1",
  "halo2wrong 0.1.0 (git+https://github.com/privacy-scaling-explorations/halo2wrong?tag=v2023_02_02)",
  "num-bigint",
  "num-integer",
@@ -1767,7 +1789,7 @@ name = "maingate"
 version = "0.1.0"
 source = "git+https://github.com/privacy-scaling-explorations/halo2wrong?rev=ed953b054b906b64787dc9a8cbefc0db4be9f8fa#ed953b054b906b64787dc9a8cbefc0db4be9f8fa"
 dependencies = [
- "group",
+ "group 0.12.1",
  "halo2wrong 0.1.0 (git+https://github.com/privacy-scaling-explorations/halo2wrong?rev=ed953b054b906b64787dc9a8cbefc0db4be9f8fa)",
  "num-bigint",
  "num-integer",
@@ -2021,8 +2043,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5cc65faf8e7313b4b1fbaa9f7ca917a0eed499a9663be71477f87993604341d8"
 dependencies = [
  "blake2b_simd",
- "ff",
- "group",
+ "ff 0.12.1",
+ "group 0.12.1",
  "lazy_static",
  "rand",
  "static_assertions",
@@ -2771,6 +2793,14 @@ name = "smallvec"
 version = "1.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
+
+[[package]]
+name = "snark-0"
+version = "0.1.0"
+dependencies = [
+ "group 0.11.0",
+ "halo2_proofs 0.2.0 (git+https://github.com/appliedzkp/halo2.git?rev=96d9bde905a20117b4350ffba0b0a6479aa63f0a)",
+]
 
 [[package]]
 name = "socket2"
