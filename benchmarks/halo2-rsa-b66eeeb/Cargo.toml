@@ -1,0 +1,22 @@
+[package]
+name = "halo2-rsa"
+version = "0.1.0"
+edition = "2021"
+authors = ["Sora Suegami"]
+description = "RSA verification circuit in halo2."
+license = "MIT"
+
+[lib]
+
+[dependencies]
+maingate = { git = "https://github.com/privacy-scaling-explorations/halo2wrong", version = "0.1.0", rev = "ed953b054b906b64787dc9a8cbefc0db4be9f8fa"}
+halo2wrong =  { git = "https://github.com/privacy-scaling-explorations/halo2wrong", version = "0.1.0", rev = "ed953b054b906b64787dc9a8cbefc0db4be9f8fa"}
+halo2-dynamic-sha256 = { git = "https://github.com/SoraSuegami/halo2-dynamic-sha256", version = "0.1.0"}
+num-bigint = { version = "0.4", features = ["rand"] }
+zkevm-circuits = { git = "https://github.com/SoraSuegami/zkevm-circuits.git", version = "0.1.0"}
+eth-types = { git = "https://github.com/SoraSuegami/zkevm-circuits.git", version = "0.1.0"}
+sha2 = "0.10.6"
+
+[dev-dependencies]
+rand = "0.8.5"
+rsa = "0.6.1"

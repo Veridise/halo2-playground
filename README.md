@@ -12,5 +12,7 @@ cargo run -p cab2 --bin cab2-0
 
 # example of an underconstrained circuit
 cargo run -p cab2 --bin cab2-1
+
+cargo +nightly test -p halo2-rsa
 ```
 

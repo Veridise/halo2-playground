@@ -2,5 +2,6 @@
 
 members = [
     "benchmarks/devcon/",
-    "benchmarks/cab2/"
+    "benchmarks/cab2/",
+    "benchmarks/halo2-rsa-b66eeeb/",
 ]
